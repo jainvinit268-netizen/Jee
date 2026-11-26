@@ -1,4 +1,4 @@
-name: Build and Release EDUNITI Native Android APK
+name: Build and Release EDUNITI Website Android App
 on:
   workflow_dispatch:
   push:
@@ -21,26 +21,24 @@ jobs:
           curl -L https://services.gradle.org/distributions/gradle-8.9-bin.zip -o /tmp/gradle.zip
           unzip -q /tmp/gradle.zip -d /tmp
           echo "/tmp/gradle-8.9/bin" >> "$GITHUB_PATH"
-      - name: Prepare offline question bank and images
-        working-directory: android
-        run: bash scripts/prepare-assets.sh
-      - name: Build native debug APK
+      - name: Build website-wrapper Android APK
         working-directory: android
         run: gradle --no-daemon assembleDebug
       - name: Upload APK as workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: EDUNITI-Native-APK
+          name: EDUNITI-Website-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v2.0.0
+          tag_name: v3.0.0
           target_commitish: ${{ github.sha }}
-          name: EDUNITI Android App v2.0.0
+          name: EDUNITI Website Android App v3.0.0
           body: |
-            Native Jetpack Compose EDUNITI app. No WebView; question bank bundled for offline practice.
+            Android app that opens the existing EDUNITI GitHub Pages website.
+            Website: https://jainvinit268-netizen.github.io/Jee/
             Built from commit ${{ github.sha }}.
           files: android/app/build/outputs/apk/debug/app-debug.apk
           draft: false

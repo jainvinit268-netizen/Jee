@@ -1,0 +1,62 @@
+name: Deploy EDUNITI website to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.zip'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Pages
+        uses: actions/configure-pages@v5
+
+      - name: Extract website ZIP
+        run: |
+          ZIP_FILE="$(find . -maxdepth 1 -type f -name '*.zip' | head -n 1)"
+          if [ -z "$ZIP_FILE" ]; then
+            echo "No website ZIP found in repository root."
+            exit 1
+          fi
+          mkdir -p site
+          unzip -q "$ZIP_FILE" -d site
+          if [ ! -f site/index.html ]; then
+            INDEX_FILE="$(find site -type f -name index.html | head -n 1)"
+            if [ -z "$INDEX_FILE" ]; then
+              echo "index.html not found in ZIP."
+              exit 1
+            fi
+            INDEX_DIR="$(dirname "$INDEX_FILE")"
+            if [ "$INDEX_DIR" != "site" ]; then
+              shopt -s dotglob
+              mv "$INDEX_DIR"/* site/
+            fi
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

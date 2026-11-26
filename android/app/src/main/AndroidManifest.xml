@@ -3,6 +3,8 @@
     <application
         android:theme="@android:style/Theme.Material.Light.NoActionBar"
         android:label="EDUNITI"
+        android:icon="@drawable/ic_eduniti"
+        android:roundIcon="@drawable/ic_eduniti"
         android:usesCleartextTraffic="false"
         android:hardwareAccelerated="true">
         <activity

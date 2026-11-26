@@ -6,7 +6,7 @@ plugins {
 android {
     namespace = "com.eduniti.app"
     compileSdk = 35
-    defaultConfig { applicationId = "com.eduniti.app"; minSdk = 24; targetSdk = 35; versionCode = 2; versionName = "2.0" }
+    defaultConfig { applicationId = "com.eduniti.app"; minSdk = 24; targetSdk = 35; versionCode = 3; versionName = "3.0" }
     buildFeatures { compose = true }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
